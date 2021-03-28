@@ -1,108 +1,142 @@
-function buttonfunc(){
-	document.getElementById("tbody").className = "w3-table w3-bordered";
-};
-function addRow()
-{
-    document.querySelector("button").disabled = true;
-	var row = document.createElement("tr");
-	
-	// subject
-	var cell1 = document.createElement("td");
-	var inputSubj = document.createElement("input");
-	inputSubj.type = "text";
-	inputSubj.style.width="100px";
-	inputSubj.id = "inputSubj";
-	cell1.appendChild(inputSubj);
-	row.appendChild(cell1);
-	
-	var cell2 = document.createElement("td");
-	var inputSemester = document.createElement("input");
-	inputSemester.type = "text";
-	inputSemester.style.width="100px";
-	inputSemester.id = "inputSemester";
-	cell2.appendChild(inputSemester);
-	row.appendChild(cell2);
-	
-	var cell3 = document.createElement("td");
-	var inputValue = document.createElement("input");
-	inputValue.type = "text";
-	inputValue.style.width="100px";
-	inputValue.id = "inputValue";
-	cell3.appendChild(inputValue);
-	row.appendChild(cell3);
-	
-	var cell4 = document.createElement("td");
-	var inputSemestrial = document.createElement("input");
-	inputSemestrial.type = "checkbox";
-	inputSemestrial.className ="chbox";
-	inputSemestrial.style.height = "20px";
-	inputSemestrial.style.width = "20px";
-	inputSemestrial.id = "inputSemestrial";
-	cell4.appendChild(inputSemestrial);
-	row.appendChild(cell4);
-	
-	var cell5 = document.createElement("td");
-	var inputMark = document.createElement("input");
-	inputMark.type = "text";
-	inputMark.style.width="100px";
-	inputMark.id = "inputMark";
-	cell5.appendChild(inputMark);
-	row.appendChild(cell5);
-	
-	var cell6 = document.createElement("td");
-	var inputComment = document.createElement("input");
-	inputComment.type = "text";
-	inputComment.style.width="100px";
-	inputComment.id = "inputComment";
-	cell6.appendChild(inputComment);
-	row.appendChild(cell6);
-	
-	var cell7 = document.createElement("td");
-	var inputOrder = document.createElement("input");
-	inputOrder.type = "submit";
-	inputOrder.style.width="100px";
-	inputOrder.style.color="green";
-	inputOrder.id = "inputOrder";
-	inputOrder.onclick = function () {
-		
-		var action = "insert";
-		var subj = document.getElementById("inputSubj").value;
-		var semester = document.getElementById("inputSemester").value;
-		var value = document.getElementById("inputValue").value;
-		var semestrial;
-		var checkbox = document.getElementById("inputSemestrial");
-		var mark = document.getElementById("inputMark").value;
-		var comment = document.getElementById("inputComment").value;
-		if (subj != "" && semester != "" && value != "" && mark != "") {
+var action = "insert";
+//Get the modal
+var modal = byId("myModal");
 
-			if (checkbox.checked == true) {
-				semestrial = 1;
-			}
-			else {
-				semestrial = 0;
-			}
-			var urlString = "index.jsp?action="+action+"&subj="+subj+"&semester="+semester+"&value="+value
-				+"&semestrial="+semestrial+"&mark="+mark+"&comment="+comment;
-			
-			window.location = urlString;
-			row.remove();
-		}
-		else {
-			alert("you must complete important information.")
+
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
 }
-		
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+function showdb() {
+	byId("tabledb").style.display = "block";
+	byId("tablers").style.display = "none";
+}
+function showrs() {
+	byId("tablers").style.display = "block";
+	byId("tabledb").style.display = "none";
+}
+function newRow(){
+	byId("inputSubj").value= ""; 
+	byId("inputSemester").value = ""; 
+	byId("inputRatio").value = "1"; 
+	byId("inputMark").value = ""; 
+	byId("inputComment").value= ""; 
+	byId("inputSemestrial").checked= false; 
+	modal.style.display = "block";
+}
+
+function submitRow() {
+	var subj = byId("inputSubj").value; 
+	var semester = byId("inputSemester").value; 
+	var ratio = byId("inputRatio").value; 
+	var mark = byId("inputMark").value; 
+	var comment = byId("inputComment").value; 
+
+	if (subj != "" && semester != "" && ratio != "" && mark != "") {
+
+		byId("editForm").submit();
+		modal.style.display = "none";
 	}
-	cell7.appendChild(inputOrder);
-	row.appendChild(cell7);
+	else {
+		alert("You must fill in the required fields.")
+	}
 	
-	
-	
-	
-      
-      // get the html table
-      // 0 = the first table
-      var table = document.getElementById('tbody');
-      table.appendChild(row);
-      
-      
+
 }
+function deleteRow(rowId) {
+	if(confirm("Are you sure?")){
+		var urlString = "index.jsp?action=remove&id="+rowId;
+		window.location = urlString;
+	}
+
+}
+function editRow(rowId, row) {
+		var semestrial = 0;
+
+		var valSubj = row.children[0].innerText;
+		var valSemester = row.children[1].innerText;
+		var valRatio = row.children[2].innerText;
+		var valSemestrial = row.children[3].innerText;
+		var valMark = row.children[4].innerText;
+		var valComment = row.children[5].innerText;
+		
+		var id = byId("inputId"); 
+		var subj = byId("inputSubj"); 
+		var semester = byId("inputSemester"); 
+		var ratio = byId("inputRatio"); 
+		var checkbox = byId("inputSemestrial"); 
+		var mark = byId("inputMark"); 
+		var comment = byId("inputComment"); 
+		
+		id.value = rowId;
+		subj.value = valSubj;
+		semester.value = valSemester;
+		ratio.value = valRatio;
+		if (valSemestrial == "1") {
+			checkbox.checked = true;
+		}
+		else{
+			checkbox.checked = false;
+		}
+		mark.value = valMark;
+		comment.value = valComment;
+		modal.style.display = "block";
+}
+
+
+function createUser() {
+	var username = byId("username").value;
+	var password = byId("password").value;
+	var confpass = byId("confirmpassword").value;
+	var email = byId("email").value;
+	if (password.length < 6) {
+		alert("password must be longer than 6 characters")
+		//must delete current input value
+	}
+	else if (password.length > 20) {
+		alert("password must be lesser than 20 characters")
+		//must delete current input value
+	}
+
+	else if (confpass == "") {
+		alert("please confirm your password")
+	}
+	else if (confpass != password) {
+		alert("please match your password and confirm password")
+	}
+	else {
+		byId("regForm").submit();
+	}
+		
+	
+}
+function loginUser() {
+	var username = byId("username").value;
+	var password = byId("password").value;
+	if (username == "") {
+			alert("username is empty")
+	}
+	else if (password == "") {
+			alert("password is empty")
+	}
+	else{
+		byId("logForm").submit();
+	}
+}
+function byId(id){
+	return document.getElementById(id);
+}
+
+
+
